@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export SOME_ENV_VAR="some value"
+
+./sbt -v -213
