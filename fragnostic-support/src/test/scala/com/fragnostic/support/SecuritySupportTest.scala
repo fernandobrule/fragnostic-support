@@ -4,9 +4,9 @@ import org.scalatest.{ FunSpec, Matchers }
 
 class SecuritySupportTest extends FunSpec with Matchers {
 
-  describe("SecuritySupportTest") {
+  describe("Security Support Test") {
 
-    it("Can") {
+    ignore("Can") {
 
     }
 
