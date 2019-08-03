@@ -2,19 +2,32 @@ package com.fragnostic.support
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+
 import org.slf4j.LoggerFactory
+
+import scala.util.Try
 
 trait DbTypesSupport {
 
   private def logger = LoggerFactory.getLogger(getClass.getName)
 
-  private val ptrnUsrUtc = "dd-MM-yyyy HH:mm:ss"
-  private val ptrnTs = "dd-MM-yyyy HH:mm:ss"
+  val ptrnStrTst = "dd-MM-yyyy HH:mm:ss"
+  val ptrnSqlTst = "dd-MM-yyyy HH:mm:ss"
 
-  def str2tst(timestampString: String): Timestamp =
-    new Timestamp(new SimpleDateFormat(ptrnUsrUtc).parse(timestampString).getTime)
+  def str2sqlTst(timestampString: String): Either[String, Timestamp] =
+    Try {
+      Right(new Timestamp(new SimpleDateFormat(ptrnStrTst).parse(timestampString).getTime))
+    } getOrElse {
+      logger.error(s"str2sqlTst() - it is not possible parse: $timestampString")
+      Left("str.2.sql.tst.error")
+    }
 
-  def tst2str(ts: Timestamp): String =
-    new SimpleDateFormat(ptrnTs).format(ts)
+  def sqlTst2str(sqlTst: Timestamp): Either[String, String] =
+    Try {
+      Right(new SimpleDateFormat(ptrnSqlTst).format(sqlTst))
+    } getOrElse {
+      logger.error(s"sqlTst2str() - it is not possible format: $sqlTst")
+      Left("sql.tst.2.str.error")
+    }
 
 }

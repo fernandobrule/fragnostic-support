@@ -7,7 +7,7 @@ trait SecuritySupport {
   private def logger = LoggerFactory.getLogger(getClass.getName)
 
   def encrypt(text: String): String = {
-    if (logger.isInfoEnabled()) logger.warn(s"encrypt|NOT YET!")
+    logger.warn(s"encrypt() - NOT YET!")
     text
   }
 
