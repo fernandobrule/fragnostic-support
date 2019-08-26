@@ -11,7 +11,7 @@ trait FilesSupport {
 
   private def logger = LoggerFactory.getLogger(getClass.getName)
 
-  private def getBufferedReader(file: File, charsetName: String): Either[String, BufferedReader] =
+  def getBufferedReader(file: File, charsetName: String): Either[String, BufferedReader] =
     try {
       Right(
         new BufferedReader(
@@ -28,9 +28,12 @@ trait FilesSupport {
         Left("get.buffered.reader.error")
     }
 
-  private def readFileToList(br: BufferedReader, list: List[String]): List[String] =
+  def readFileToList(br: BufferedReader, list: List[String]): List[String] =
     Option(br.readLine()).map(line =>
-      line :: readFileToList(br, list)) getOrElse list
+      line :: readFileToList(br, list)) getOrElse {
+      br.close()
+      list
+    }
 
   def readFileToList(path: String, charsetName: String): Either[String, List[String]] =
     getBufferedReader(new File(path), charsetName) fold (
@@ -41,19 +44,17 @@ trait FilesSupport {
         Right(list)
       })
 
-  private def readFileToString(br: BufferedReader, text: String): String =
+  def readFileToString(br: BufferedReader, text: String): String =
     Option(br.readLine()).map(line =>
-      s"$line\n${readFileToString(br, text)}") getOrElse text
+      s"$line\n${readFileToString(br, text)}") getOrElse {
+      br.close()
+      text
+    }
 
   def readFileToString(path: String, charsetName: String): Either[String, String] =
     getBufferedReader(new File(path), charsetName) fold (
       error => Left(error),
-      bufferReader => {
-        val text: String = readFileToString(bufferReader, "")
-        if (logger.isInfoEnabled) logger.info(s"readFileToString() - text : $text")
-        bufferReader.close()
-        Right(text)
-      })
+      bufferReader => Right(readFileToString(bufferReader, "")))
 
   def loadProperties(filePath: String): Either[String, Properties] =
     if (filePath != null && !"".equals(filePath.trim())) {
