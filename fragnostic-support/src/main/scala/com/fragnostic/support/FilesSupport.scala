@@ -3,13 +3,13 @@ package com.fragnostic.support
 import java.io._
 import java.util.Properties
 
-import org.slf4j.LoggerFactory
+import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.util.Try
 
 trait FilesSupport {
 
-  private def logger = LoggerFactory.getLogger(getClass.getName)
+  private[this] val logger: Logger = LoggerFactory.getLogger(getClass.getName)
 
   def getBufferedReader(file: File, charsetName: String): Either[String, BufferedReader] =
     try {
@@ -45,8 +45,7 @@ trait FilesSupport {
       })
 
   def readFileToString(br: BufferedReader, text: String): String =
-    Option(br.readLine()).map(line =>
-      s"$line\n${readFileToString(br, text)}") getOrElse {
+    Option(br.readLine()).map(line => s"$line\n${readFileToString(br, text)}") getOrElse {
       br.close()
       text
     }
