@@ -25,7 +25,7 @@ class DbTypesSupportTest extends FunSpec with Matchers with DbTypesSupport {
         error => error,
         sqlTst => sqlTst)
 
-      error should be("str.2.sql.tst.error")
+      error should be("str2sqltst.error")
 
     }
 
