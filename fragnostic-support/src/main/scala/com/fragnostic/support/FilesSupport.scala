@@ -11,49 +11,41 @@ trait FilesSupport {
 
   private[this] val logger: Logger = LoggerFactory.getLogger(getClass.getName)
 
-  def getBufferedReader(file: File, charsetName: String): Either[String, BufferedReader] =
+  def fileToBufferedReader(file: File, charsetName: String): Either[String, BufferedReader] =
     try {
-      Right(
-        new BufferedReader(
-          new InputStreamReader(
-            new FileInputStream(
-              file),
-            charsetName)))
+      logger.info(s"fileToBufferedReader() - file:$file") //aqui
+      Right(new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName)))
     } catch {
       case e: Exception =>
-        logger.error(s"getBufferedReader() - $e")
-        Left("get.buffered.reader.error")
-      case e: Throwable =>
-        logger.error(s"getBufferedReader() - $e")
-        Left("get.buffered.reader.error")
+        logger.error(s"fileToBufferedReader() - $e")
+        Left("files.support.file.to.buffered.reader.error")
     }
 
-  def readFileToList(br: BufferedReader, list: List[String]): List[String] =
-    Option(br.readLine()).map(line =>
-      line :: readFileToList(br, list)) getOrElse {
-      br.close()
-      list
-    }
+  def bufferedReaderToList(br: BufferedReader, list: List[String]): List[String] =
+    Option(br.readLine()).map(line => line :: bufferedReaderToList(br, list)) getOrElse { list }
 
-  def readFileToList(path: String, charsetName: String): Either[String, List[String]] =
-    getBufferedReader(new File(path), charsetName) fold (
+  def fileToList(path: String, charsetName: String): Either[String, List[String]] =
+    fileToBufferedReader(new File(path), charsetName) fold (
       error => Left(error),
-      bufferReader => {
-        val list = readFileToList(bufferReader, List[String]())
-        bufferReader.close()
-        Right(list)
-      })
+      bufferReader =>
+        try {
+          logger.info(s"fileToList() - bufferedReader is OK") //aqui
+          Right(bufferedReaderToList(bufferReader, List[String]()))
+        } finally {
+          bufferReader.close()
+        })
 
-  def readFileToString(br: BufferedReader, text: String): String =
-    Option(br.readLine()).map(line => s"$line\n${readFileToString(br, text)}") getOrElse {
-      br.close()
-      text
-    }
+  def bufferedReaderToString(br: BufferedReader, text: String): String =
+    Option(br.readLine()).map(line => s"$line\n${bufferedReaderToString(br, text)}") getOrElse { text }
 
-  def readFileToString(path: String, charsetName: String): Either[String, String] =
-    getBufferedReader(new File(path), charsetName) fold (
-      error => Left(error),
-      bufferReader => Right(readFileToString(bufferReader, "")))
+  def fileToString(path: String, charsetName: String): Either[String, String] =
+    fileToBufferedReader(new File(path), charsetName) fold (error => Left(error),
+      bufferReader =>
+        try {
+          Right(bufferedReaderToString(bufferReader, ""))
+        } finally {
+          bufferReader.close()
+        })
 
   def loadProperties(filePath: String): Either[String, Properties] =
     if (filePath != null && !"".equals(filePath.trim())) {
@@ -65,8 +57,7 @@ trait FilesSupport {
           props
         })
       } getOrElse {
-        logger.error(
-          s"""
+        logger.error(s"""
              |
              | loadProperties() - on read properties from file:\n
              | \t - $filePath
@@ -75,5 +66,33 @@ trait FilesSupport {
         Left("load.properties.error")
       }
     } else Left("load.properties.error.file.path.is.empty")
+
+  @scala.annotation.tailrec
+  private def writeLinesToBufferedReader(lines: List[String], buffWrit: BufferedWriter): Unit =
+    lines match {
+      case Nil =>
+        buffWrit.newLine()
+      case head :: Nil =>
+        buffWrit.write(head)
+        buffWrit.newLine()
+      case head :: tail =>
+        buffWrit.write(head)
+        buffWrit.newLine()
+        writeLinesToBufferedReader(tail, buffWrit)
+    }
+
+  def writeLinesToFile(lines: List[String], fileName: String): Either[String, String] = {
+    try {
+      val file = new File(fileName)
+      val buffWrit = new BufferedWriter(new FileWriter(file))
+      writeLinesToBufferedReader(lines, buffWrit)
+      buffWrit.close()
+      Right("files.support.write.lines.to.file.success")
+    } catch {
+      case e: Exception =>
+        logger.error(s"writeLinesToFile() - $e")
+        Left("files.support.write.lines.to.file.error")
+    }
+  }
 
 }
