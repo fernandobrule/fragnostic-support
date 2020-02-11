@@ -9,15 +9,15 @@ import scala.util.Try
 
 trait FilesSupport {
 
-  private[this] val logger: Logger = LoggerFactory.getLogger(getClass.getName)
+  private[this] val loggerFilesSup: Logger = LoggerFactory.getLogger(getClass.getName)
 
   def fileToBufferedReader(file: File, charsetName: String): Either[String, BufferedReader] =
     try {
-      logger.info(s"fileToBufferedReader() - file:$file") //aqui
+      loggerFilesSup.info(s"fileToBufferedReader() - file:$file") //aqui
       Right(new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName)))
     } catch {
       case e: Exception =>
-        logger.error(s"fileToBufferedReader() - $e")
+        loggerFilesSup.error(s"fileToBufferedReader() - $e")
         Left("files.support.file.to.buffered.reader.error")
     }
 
@@ -29,7 +29,7 @@ trait FilesSupport {
       error => Left(error),
       bufferReader =>
         try {
-          logger.info(s"fileToList() - bufferedReader is OK") //aqui
+          loggerFilesSup.info(s"fileToList() - bufferedReader is OK") //aqui
           Right(bufferedReaderToList(bufferReader, List[String]()))
         } finally {
           bufferReader.close()
@@ -49,7 +49,7 @@ trait FilesSupport {
 
   def loadProperties(filePath: String): Either[String, Properties] =
     if (filePath != null && !"".equals(filePath.trim())) {
-      if (logger.isInfoEnabled) logger.info(s"loadProperties() - from filePath[$filePath]")
+      if (loggerFilesSup.isInfoEnabled) loggerFilesSup.info(s"loadProperties() - from filePath[$filePath]")
       Try {
         Right({
           val props = new Properties()
@@ -57,7 +57,7 @@ trait FilesSupport {
           props
         })
       } getOrElse {
-        logger.error(s"""
+        loggerFilesSup.error(s"""
              |
              | loadProperties() - on read properties from file:\n
              | \t - $filePath
@@ -90,7 +90,7 @@ trait FilesSupport {
       Right("files.support.write.lines.to.file.success")
     } catch {
       case e: Exception =>
-        logger.error(s"writeLinesToFile() - $e")
+        loggerFilesSup.error(s"writeLinesToFile() - $e")
         Left("files.support.write.lines.to.file.error")
     }
   }
