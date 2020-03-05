@@ -7,7 +7,7 @@ import org.slf4j.{ Logger, LoggerFactory }
 
 trait DbTypesSupport {
 
-  private[this] val logger: Logger = LoggerFactory.getLogger(getClass.getName)
+  private[this] val loggerDbTypesSup: Logger = LoggerFactory.getLogger(getClass.getName)
 
   val ptrnStrTst = "dd-MM-yyyy HH:mm:ss"
   val ptrnSqlTst = "dd-MM-yyyy HH:mm:ss"
@@ -17,7 +17,7 @@ trait DbTypesSupport {
       Right(new Timestamp(new SimpleDateFormat(ptrnStrTst).parse(timestampString).getTime))
     } catch {
       case e: Exception =>
-        logger.error(s"str2sqltst() - $e")
+        loggerDbTypesSup.error(s"str2sqltst() - $e")
         Left("str2sqltst.error")
     }
 
@@ -26,7 +26,7 @@ trait DbTypesSupport {
       Right(new Date(new SimpleDateFormat(ptrnStrTst).parse(timestampString).getTime))
     } catch {
       case e: Exception =>
-        logger.error(s"str2sqlDate() - $e")
+        loggerDbTypesSup.error(s"str2sqlDate() - $e")
         Left("str2sqldate.error")
     }
 
@@ -35,7 +35,7 @@ trait DbTypesSupport {
       Right(new SimpleDateFormat(ptrnSqlTst).format(sqlTst))
     } catch {
       case e: Exception =>
-        logger.error(s"sqlTst2str() - $e")
+        loggerDbTypesSup.error(s"sqlTst2str() - $e")
         Left("sqltst2str.error")
     }
 
@@ -44,7 +44,7 @@ trait DbTypesSupport {
       Right(new SimpleDateFormat(ptrnSqlTst).format(sqlDate))
     } catch {
       case e: Exception =>
-        logger.error(s"sqlDate2str() - $e")
+        loggerDbTypesSup.error(s"sqlDate2str() - $e")
         Left("sqldate2str.error")
     }
 

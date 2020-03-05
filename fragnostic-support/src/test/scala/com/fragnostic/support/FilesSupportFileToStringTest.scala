@@ -2,7 +2,7 @@ package com.fragnostic.support
 
 import java.io.{ BufferedReader, File }
 
-class FilesSupportFileToStringTest extends AgnosticTest with FilesSupport {
+class FilesSupportFileToStringTest extends AgnosticTest {
 
   val path: String = s"$basePath/read-file-to-string.txt"
   val text: String = """w
