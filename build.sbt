@@ -78,7 +78,8 @@ lazy val fragnosticSupport = Project(
     libraryDependencies ++= Seq(
       logbackClassic,
       slf4jApi,
-      scalatest
+      scalatest,
+      betterFiles
     ),
     description := "fragnostic-support"
   )

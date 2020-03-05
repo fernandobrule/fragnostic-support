@@ -2,7 +2,7 @@ package com.fragnostic.support
 
 import java.io.{ BufferedReader, File }
 
-class FilesSupportFileToListTest extends AgnosticTest with FilesSupport {
+class FilesSupportFileToListTest extends AgnosticTest {
 
   describe("Files Support Read File To List Test") {
 

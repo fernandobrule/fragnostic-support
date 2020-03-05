@@ -2,7 +2,7 @@ package com.fragnostic.support
 
 import java.util.Properties
 
-class FilesSupportLoadPropertiesTest extends AgnosticTest with FilesSupport {
+class FilesSupportLoadPropertiesTest extends AgnosticTest {
 
   describe("Files Support Load Properties Test") {
 
