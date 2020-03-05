@@ -1,6 +1,6 @@
 package com.fragnostic.support
 
-class FilesSupportWriteLinesToFileTest extends AgnosticTest with FilesSupport {
+class FilesSupportWriteLinesToFileTest extends AgnosticTest {
 
   describe("Files Support Write Lines To File Test") {
 
