@@ -12,7 +12,7 @@ val unusedOptions = Def.setting(
   }
 )
 
-lazy val vilFatBackendSettings = Seq(
+lazy val frgSupportSettings = Seq(
   organization := "com.fragnostic",
   fork in Test := true,
   baseDirectory in Test := file("."),
@@ -43,38 +43,6 @@ lazy val vilFatBackendSettings = Seq(
   scalacOptions in (c, console) --= unusedOptions.value
 )
 
-lazy val vilFatBackendProject = Project(
-  id = "fragnostic-support-project",
-  base = file(".")).settings(
-    vilFatBackendSettings ++ Seq(
-    name := "fragnostic support",
-    artifacts := Classpaths.artifactDefs(Seq(packageDoc in Compile, makePom in Compile)).value,
-    packagedArtifacts := Classpaths.packaged(Seq(packageDoc in Compile, makePom in Compile)).value,
-    description := "fragnostic support",
-    shellPrompt := { state =>
-      s"sbt:${Project.extract(state).currentProject.id}" + Def.withColor("> ", Option(scala.Console.CYAN))
-    }
-  ) ++ Defaults.packageTaskSettings(
-    packageDoc in Compile, (unidoc in Compile).map(_.flatMap(Path.allSubpaths))
-  )).aggregate(
-    fragnosticSupport
-  ).enablePlugins(ScalaUnidocPlugin)
-
-lazy val fragnosticSupport = Project(
-  id = "fragnostic-support",
-  base = file("fragnostic-support")).settings(vilFatBackendSettings ++ Seq(
-    libraryDependencies ++= Seq(
-      logbackClassic,
-      slf4jApi,
-      scalatest,
-      betterFiles
-    ),
-    description := "fragnostic support"
-  )
-) dependsOn(
-  //
-)
-
 lazy val manifestSetting = packageOptions += {
   Package.ManifestAttributes(
     "Created-By" -> "Simple Build Tool",
@@ -92,8 +60,8 @@ lazy val manifestSetting = packageOptions += {
 
 // Things we care about primarily because Maven Central demands them
 lazy val mavenCentralFrouFrou = Seq(
-  homepage := Some(new URL("http://www.notyet.com.br")),
-  startYear := Some(2019),
+  homepage := Some(new URL("http://www.fragnostic.com.br")),
+  startYear := Some(2020),
   pomExtra := pomExtra.value ++ Group(
     <developers>
       <developer>
@@ -106,3 +74,35 @@ lazy val mavenCentralFrouFrou = Seq(
 )
 
 lazy val doNotPublish = Seq(publish := {}, publishLocal := {}, PgpKeys.publishSigned := {}, PgpKeys.publishLocalSigned := {})
+
+lazy val frgSupportProject = Project(
+  id = "fragnostic-support-project",
+  base = file(".")).settings(
+    frgSupportSettings ++ Seq(
+    name := "fragnostic support project",
+    artifacts := Classpaths.artifactDefs(Seq(packageDoc in Compile, makePom in Compile)).value,
+    packagedArtifacts := Classpaths.packaged(Seq(packageDoc in Compile, makePom in Compile)).value,
+    description := "A Fragnostic Support",
+    shellPrompt := { state =>
+      s"sbt:${Project.extract(state).currentProject.id}" + Def.withColor("> ", Option(scala.Console.CYAN))
+    }
+  ) ++ Defaults.packageTaskSettings(
+    packageDoc in Compile, (unidoc in Compile).map(_.flatMap(Path.allSubpaths))
+  )).aggregate(
+    frgSupport
+  ).enablePlugins(ScalaUnidocPlugin)
+
+lazy val frgSupport = Project(
+  id = "fragnostic-support",
+  base = file("fragnostic-support")).settings(frgSupportSettings ++ Seq(
+    libraryDependencies ++= Seq(
+      logbackClassic,
+      slf4jApi,
+      scalatest,
+      betterFiles
+    ),
+    description := "fragnostic support"
+  )
+) dependsOn(
+  //
+)
