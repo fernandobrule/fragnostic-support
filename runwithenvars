@@ -2,4 +2,4 @@
 
 export SOME_ENV_VAR="some value"
 
-./sbt -v -213
+./sbt -v -213 -Dsbt.io.implicit.relative.glob.conversion=allow
