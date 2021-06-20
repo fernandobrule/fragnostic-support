@@ -14,7 +14,7 @@ class FilesSupportWriteLinesToFileTest extends AgnosticTest {
 
     it("Can Write Lines") {
 
-      val fileName: String = "/Users/fernandobrule/Clones/fragnostic/fragnostic-code/fragnostic-support/target/lines.txt"
+      val fileName: String = "./target/lines.txt"
       val lines: List[String] = "Uno" :: "Dos" :: "Tres" :: "Cuatro" :: "Cinco" :: Nil
 
       val ans = writeLinesToFile(lines, fileName) fold (

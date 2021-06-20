@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export SOME_ENV_VAR="some value"
+source ./environment
 
 ./sbt -v -213 -Dsbt.io.implicit.relative.glob.conversion=allow
